@@ -1,5 +1,6 @@
 const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '../.env') }); // Note the path change
+// This now assumes the .env file is in the root directory where the script is run
+require('dotenv').config();
 
 module.exports = {
     // --- Trade Configuration ---
@@ -24,3 +25,4 @@ module.exports = {
     PRIVATE_KEY_STRING: process.env.PRIVATE_KEY,
     PACIFICA_API_KEY: process.env.API_KEY,
 };
+
