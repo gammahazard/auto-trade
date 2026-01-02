@@ -1,99 +1,71 @@
+# 📉 Pacifica Scalping Bot: High-Frequency Execution Engine
 
-# Pacifica Scalping Bot
+![Runtime](https://img.shields.io/badge/Runtime-Node.js_v18+-43853D?style=for-the-badge&logo=node.js)
+![Strategy](https://img.shields.io/badge/Focus-Automated_Risk_Management-red?style=for-the-badge)
+![Connectivity](https://img.shields.io/badge/Networking-Resilient_WebSockets-blue?style=for-the-badge)
 
-This is an automated, high-frequency scalping bot designed to trade BTC perpetual futures on the Pacifica exchange. It uses a multi-factor strategy to identify and execute short-term trades.
+An automated, high-frequency scalping engine engineered to execute BTC perpetual futures trades on the Pacifica exchange. This system utilizes a sophisticated multi-factor strategy to maintain market edge through high-probability, short-term volatility.
 
-**DISCLAIMER: This is a high-risk tool that executes real trades with real money. Use it at your own risk. The creators are not responsible for any financial losses. It is strongly recommended to test with very small amounts of capital before deploying with significant funds.**
+---
 
-## Features
+## 🏗️ Architectural Core
 
-* **Multi-Factor Signal Generation:** Uses a sophisticated five-filter system to find high-probability signals, analyzing:
-  1. Long-term trend (15m candle)
-  2. Short-term momentum (1m candle)
-  3. Entry timing (5m Simple Moving Average)
-  4. Order book imbalance
-  5. Live trade aggression (trade surge)
-* **Automated Trade Execution:** Automatically places market orders when a valid signal is detected.
-* **Server-Side Risk Management:** Places Take Profit (TP) and Stop Loss (SL) orders directly on the exchange server immediately after a position is opened.
-* **Time-Based Stop Loss:** Automatically closes any trade that has been open for longer than a configured duration.
-* **Resilient Connection:** Automatically reconnects to the WebSocket if the connection is dropped.
+The bot is designed around a **Resilient Connection Model**, ensuring that the engine automatically reconnects to the exchange WebSockets if a drop occurs, maintaining 100% market visibility.
 
-## Setup Instructions
+### Intelligence Features
+* **Multi-Factor Signal Generation:** Analyzes five distinct filters (15m Trend, 1m Momentum, 5m SMA, Order Book Imbalance, and Trade Surges) to find high-probability entries.
+* **Server-Side Risk Mitigation:** Hard-codes Take Profit (TP) and Stop Loss (SL) orders directly on the exchange server the moment a position is opened.
+* **Time-Based Safety:** Implements an automated "kill-switch" to close any stale trades that exceed a configured duration.
 
-### 1. Prerequisites
+---
 
-* [Node.js](https://nodejs.org/) (v18 or higher)
-* A Solana wallet (e.g., Phantom, Solflare) with funds for trading.
-* A Pacifica account linked to your Solana wallet.
+## ⚙️ Logic & Configuration
 
-### 2. Installation
+All operational parameters are controlled via a centralized `bot/config.js` to allow for rapid strategy tuning.
 
-Clone the repository and navigate into the project's root directory. Then, install the required dependencies:
+### Performance Parameters
+| Parameter | Description |
+| :--- | :--- |
+| **Leverage & Collateral** | Dynamic allocation of capital with built-in position sizing calculations. |
+| **Order Book Depth** | Analyzes up to 5 price levels for deep-liquidity scalping. |
+| **Trade Surge Window** | Tracks trade volume spikes within precise millisecond windows to identify aggressive market entries. |
 
+---
+
+## 🚀 Deployment
+
+### Prerequisites
+* **Node.js (v18+):** Required for asynchronous event-loop handling.
+* **Solana Wallet Integration:** Securely handles wallet authentication via local `.env` configuration.
+
+### Initialization
+
+**1. Clone & Install**
 ```bash
-git clone https://github.com/gammahazard/auto-trade
+git clone [https://github.com/gammahazard/auto-trade](https://github.com/gammahazard/auto-trade)
 cd auto-trade
 npm install
 ```
 
-### 3. Environment Configuration (`.env` file)
-
-The bot requires two secret keys to operate, which must be stored in a `.env` file in the project's root directory.
-
-First, copy the example file:
-
+**2. Configure Environment**
+Create a `.env` file in the root directory and populate it with your specific keys:
 ```bash
-cp .env.example .env
+PACIFICA_API_KEY=your_api_key
+SOLANA_PRIVATE_KEY=your_wallet_private_key
 ```
 
-Now, open the `.env` file and fill in the following values:
-
-```
-PACIFICA_API_KEY="YOUR_PACIFICA_API_KEY"
-PRIVATE_KEY="YOUR_SOLANA_WALLET_PRIVATE_KEY"
-```
-
-#### How to get your `PACIFICA_API_KEY`:
-
-1. Log in to your Pacifica account.
-2. Navigate to the API settings section.
-3. Generate a new API key and copy the value.
-
-#### How to get your `PRIVATE_KEY` from a Phantom Wallet:
-
-**WARNING: Your private key gives full control over your wallet. NEVER share it with anyone or commit it to a public repository.**
-
-1. Open your Phantom wallet and go to **Settings** (the gear icon).
-2. Select the account you want the bot to trade with.
-3. Click **"Show Private Key"**.
-4. Enter your password and copy the key.
-
-## Configuration (`bot/config.js`)
-
-All trading strategy parameters are controlled in the `bot/config.js` file. Adjust these settings to change the bot's behavior.
-
-### Risk Management Parameters
-
-* `LEVERAGE`: The leverage to use for each trade. **(High Risk)**
-* `COLLATERAL_USD`: The amount of your own capital (in USD) to allocate to each trade. The total position size will be `COLLATERAL_USD * LEVERAGE`.
-* `TAKE_PROFIT_PERCENT`: The percentage of your `COLLATERAL_USD` to target for profit. (e.g., `0.06` = 6% profit, which is `$24` on `$400` collateral).
-* `STOP_LOSS_PERCENT`: The percentage of your `COLLATERAL_USD` to risk on a loss.
-* `MAX_TRADE_DURATION_MS`: The maximum time a trade can be open before the bot automatically closes it, in milliseconds. (e.g., `5 * 60 * 1000` = 5 minutes).
-
-### Signal & Strategy Parameters
-
-* `IMBALANCE_RATIO`: The required ratio of buyers to sellers (or vice-versa) in the order book to be considered a valid signal. A value of `1.85` means one side must be 85% stronger than the other.
-* `LEVELS_TO_CHECK`: How many price levels deep in the order book the bot should analyze. `5` is recommended for scalping.
-* `TRADE_SURGE_WINDOW`: The time window in milliseconds for measuring a "surge" of trades.
-* `SMA_PERIOD`: The number of 1-minute candles to use for calculating the Simple Moving Average. `5` creates a 5-minute SMA.
-* `SMA_PROXIMITY_PERCENT`: The tolerance band around the SMA. `0.001` means the price must be within 0.1% of the SMA to be a valid entry.
-
-## Running the Bot
-
-To start the bot, run the `main.js` file from the **root directory** of your project:
-
+**3. Execution**
+Start the engine via the entry point:
 ```bash
 node bot/main.js
 ```
 
-The bot will start, set your leverage, connect to the WebSocket, and begin printing its "Searching..." status log every 5 seconds. It will then wait for a valid signal to execute a trade.
+---
+
+> **⚠️ Risk Disclosure**
+>
+> This is a high-risk tool utilizing real capital. It is strongly recommended to test with very small amounts of capital before deploying with significant funds. The creators are not responsible for any financial losses.
+
+<div align="center">
+  <sub>Developed by Vanguard Secure Solutions</sub>
+</div>
