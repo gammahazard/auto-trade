@@ -4,7 +4,7 @@
 ![Strategy](https://img.shields.io/badge/Focus-Automated_Risk_Management-red?style=for-the-badge)
 ![Connectivity](https://img.shields.io/badge/Networking-Resilient_WebSockets-blue?style=for-the-badge)
 
-An automated, high-frequency scalping engine engineered to execute BTC perpetual futures trades on the Pacifica exchange. This system utilizes a sophisticated multi-factor strategy to maintain market edge through high-probability, short-term volatility.
+A high-performance algorithmic trading engine built for the Pacifica exchange. Designed for low-latency execution, this bot leverages Node.js's asynchronous event loop to process market data and execute BTC perpetual futures trades with millisecond precision. It features a fault-tolerant WebSocket architecture and a multi-layered risk management system that enforces server-side stops immediately upon trade entry.
 
 ---
 
