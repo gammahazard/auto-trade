@@ -42,7 +42,7 @@ All operational parameters are controlled via a centralized `bot/config.js` to a
 
 **1. Clone & Install**
 ```bash
-git clone [https://github.com/gammahazard/auto-trade](https://github.com/gammahazard/auto-trade)
+git clone [https://github.com/gammahazard/auto-trade.git](https://github.com/gammahazard/auto-trade.git)
 cd auto-trade
 npm install
 ```
