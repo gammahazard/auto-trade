@@ -12,60 +12,87 @@ A high-performance algorithmic trading engine built for the Pacifica exchange. D
 
 The bot is designed around a **Resilient Connection Model**, ensuring that the engine automatically reconnects to the exchange WebSockets if a drop occurs, maintaining 100% market visibility.
 
-### Intelligence Features
-* **Multi-Factor Signal Generation:** Analyzes five distinct filters (15m Trend, 1m Momentum, 5m SMA, Order Book Imbalance, and Trade Surges) to find high-probability entries.
-* **Server-Side Risk Mitigation:** Hard-codes Take Profit (TP) and Stop Loss (SL) orders directly on the exchange server the moment a position is opened.
-* **Time-Based Safety:** Implements an automated "kill-switch" to close any stale trades that exceed a configured duration.
+### Signal Generation: 5-Factor Strategy
+All filters must align before trade execution:
+
+| Filter | Description |
+| :--- | :--- |
+| **15m Trend** | Price relative to 15-minute candle open |
+| **1m Momentum** | Current 1-minute candle direction |
+| **SMA Proximity** | Price within configured % of 5-period SMA |
+| **Order Book Imbalance** | Bid/Ask volume ratio exceeds threshold |
+| **Trade Surge** | 2:1 buy/sell trade ratio in window |
+
+### Server-Side Risk Mitigation
+* **Immediate TP/SL:** Hard-codes Take Profit and Stop Loss orders directly on the exchange server the moment a position is opened.
+* **Time-Based Kill-Switch:** Automatically closes any stale trades exceeding `MAX_TRADE_DURATION_MS`.
 
 ---
 
-## ⚙️ Logic & Configuration
+## ⚙️ Configuration
 
-All operational parameters are controlled via a centralized `bot/config.js` to allow for rapid strategy tuning.
+All parameters in `config.js`:
 
-### Performance Parameters
-| Parameter | Description |
-| :--- | :--- |
-| **Leverage & Collateral** | Dynamic allocation of capital with built-in position sizing calculations. |
-| **Order Book Depth** | Analyzes up to 5 price levels for deep-liquidity scalping. |
-| **Trade Surge Window** | Tracks trade volume spikes within precise millisecond windows to identify aggressive market entries. |
+| Parameter | Default | Description |
+| :--- | :---: | :--- |
+| `LEVERAGE` | 8x | Position leverage multiplier |
+| `COLLATERAL_USD` | $400 | Capital per trade |
+| `TAKE_PROFIT_PERCENT` | 0.06% | TP threshold |
+| `STOP_LOSS_PERCENT` | 0.03% | SL threshold |
+| `MAX_TRADE_DURATION_MS` | 5 min | Kill-switch timeout |
+| `IMBALANCE_RATIO` | 1.85 | Min bid/ask volume ratio |
+| `SMA_PERIOD` | 5 | Simple moving average period |
+| `SMA_PROXIMITY_PERCENT` | 0.1% | Price proximity to SMA |
+
+---
+
+## 📁 Project Structure
+
+```
+auto-trade/
+├── main.js              # Entry point, orchestrates all modules
+├── config.js            # Centralized configuration
+├── state.js             # Shared state management
+├── strategy.js          # 5-factor signal generation
+├── tradeManager.js      # Position lifecycle & kill-switch
+├── pacificaClient.js    # Exchange API integration
+├── websocketManager.js  # Resilient WebSocket handler
+└── README.md
+```
 
 ---
 
 ## 🚀 Deployment
 
 ### Prerequisites
-* **Node.js (v18+):** Required for asynchronous event-loop handling.
-* **Solana Wallet Integration:** Securely handles wallet authentication via local `.env` configuration.
+* **Node.js v18+** (required for async handling)
+* **Pacifica API Key** & **Solana Wallet**
 
-### Initialization
+### Setup
 
-**1. Clone & Install**
 ```bash
-git clone [https://github.com/gammahazard/auto-trade.git](https://github.com/gammahazard/auto-trade.git)
+git clone https://github.com/gammahazard/auto-trade.git
 cd auto-trade
 npm install
 ```
 
-**2. Configure Environment**
-Create a `.env` file in the root directory and populate it with your specific keys:
+Create `.env`:
 ```bash
-PACIFICA_API_KEY=your_api_key
-SOLANA_PRIVATE_KEY=your_wallet_private_key
+API_KEY=your_pacifica_api_key
+PRIVATE_KEY=your_solana_private_key
 ```
 
-**3. Execution**
-Start the engine via the entry point:
+Run:
 ```bash
-node bot/main.js
+node main.js
 ```
 
 ---
 
 > **⚠️ Risk Disclosure**
 >
-> This is a high-risk tool utilizing real capital. It is strongly recommended to test with very small amounts of capital before deploying with significant funds. The creators are not responsible for any financial losses.
+> This is a high-risk tool utilizing real capital. Test with minimal funds before deploying significant capital. The creators are not responsible for any financial losses.
 
 <div align="center">
-  <sub>Developed by Vanguard Secure Solutions</sub>
+  <sub>Developed by <a href="https://github.com/gammahazard">Vanguard Secure Solutions</a></sub>
 </div>
